@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Result of process</title>
+</head>
+<body>
+    <h1>Processed Image</h1>
+    <main>
+        {% for image_url in data %}
+            <img src="{{ image_url }}" alt="Processed Image">
+            <!-- デバッグ用：画像URLを表示 -->
+            <p>{{ image_url }}</p>
+        {% endfor %}
+        <p>aiueo</p>
+    </main>
+</body>
+</html>

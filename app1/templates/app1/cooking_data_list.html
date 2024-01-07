@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cooking data List</title>
+</head>
+<body>
+    <h1>Cooking data</h1>
+    <ul>
+        {% for data in cooking_data %}
+            <li>{{ data.name }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
