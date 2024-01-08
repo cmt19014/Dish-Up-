@@ -8,4 +8,5 @@ urlpatterns = [
     path('upload/', views.upload_and_process_image, name='upload_image'),
     path('update-dish-color/<int:dish_id>/', views.update_dish_color, name='update_dish_color'),
     path('reset-database/', views.reset_database, name='reset_database'),
+    path('process_image_again', views.process_image_again, name='process_image_again')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

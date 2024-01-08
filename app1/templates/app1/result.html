@@ -11,7 +11,7 @@
     <div class="container">
         <h1>Dish Up!! Results</h1>
         <div class="uploaded-image-container">
-            <img src="{{ data.plate_image_url }}" alt="Uploaded Image" class="uploaded-image">
+            <img id="plate_image" src="{{ data.plate_image_url }}" alt="Uploaded Image" class="uploaded-image">
             <p>Your Plate</p>
         </div>
         <div class="results-grid">
@@ -28,6 +28,11 @@
         <form action="{% url 'reset_database' %}" method="post">
             {% csrf_token %}
             <button type="submit">Return to Upload Page</button>
+        </form>
+        <form action="{% url 'process_image_again' %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="plate_image_url" value="{{ data.plate_image_url }}">
+            <button type="submit">同じお皿でもう一度試す</button>
         </form>
     </div>
 
@@ -54,6 +59,6 @@
                 });
             });
         });
-    </script>
+    </script>    
 </body>
 </html>

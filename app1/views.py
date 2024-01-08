@@ -4,6 +4,7 @@ from .forms import ImageUploadForm
 from .process import process_image
 import random
 from django.http import JsonResponse
+import json
 
 def cooking_data_list(request):
     cooking_data = Cooking_data.objects.all()
@@ -46,3 +47,24 @@ def reset_database(request):
 
     # アップロードページにリダイレクト
     return redirect(upload_and_process_image)
+
+
+
+from django.conf import settings
+import os
+from django.http import HttpResponseRedirect
+
+def process_image_again(request):
+    if request.method == 'POST':
+        plate_image_url = request.POST.get('plate_image_url')
+        image_relative_path = plate_image_url.replace(settings.MEDIA_URL, "")
+        image_path = os.path.join(settings.MEDIA_ROOT, image_relative_path)
+
+        processed_data = process_image(image_path)
+
+            # デバッグ用：生成されたURLリストをコンソールに出力
+            # print("out_of_process;result_url", processed_data)
+        return render(request, 'app1/result.html', {'data': processed_data})
+
+    # POSTリクエストでない場合は、アップロードページにリダイレクト
+    return HttpResponseRedirect(upload_and_process_image)

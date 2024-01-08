@@ -8,6 +8,7 @@ from .models import Cooking_data
 
 def process_image(uploaded_image):
     # 画像をOpenCV形式で読み込む
+    print(type(uploaded_image))
     cv2_image = Image.open(uploaded_image)
     cv2_image = np.array(cv2_image)
     cv2_image = cv2.cvtColor(cv2_image, cv2.COLOR_RGB2BGR)
