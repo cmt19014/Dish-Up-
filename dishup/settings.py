@@ -18,6 +18,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
+STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+    # 他の静的ファイルディレクトリがあればここに追加
+]
+
 
 
 # Quick-start development settings - unsuitable for production

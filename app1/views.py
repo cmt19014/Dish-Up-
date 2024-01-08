@@ -2,6 +2,8 @@ from django.shortcuts import render
 from .models import Cooking_data
 from .forms import ImageUploadForm
 from .process import process_image
+import random
+from django.http import JsonResponse
 
 def cooking_data_list(request):
     cooking_data = Cooking_data.objects.all()
@@ -20,3 +22,27 @@ def upload_and_process_image(request):
     else:
         form = ImageUploadForm()
     return render(request, 'app1/upload.html', {'form': form})
+
+def update_dish_color(request, dish_id):
+    if request.method == 'POST':
+        dish = Cooking_data.objects.get(id=dish_id)
+        dish.red = random.randint(0, 255)
+        dish.green = random.randint(0, 255)
+        dish.blue = random.randint(0, 255)
+        dish.save()
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False})
+
+
+from django.shortcuts import redirect
+
+def reset_database(request):
+    # 全ての料理データに対して初期値にリセット
+    for dish in Cooking_data.objects.all():
+        dish.red = dish.initial_red
+        dish.green = dish.initial_green
+        dish.blue = dish.initial_blue
+        dish.save()
+
+    # アップロードページにリダイレクト
+    return redirect(upload_and_process_image)

@@ -26,7 +26,7 @@ def process_image(uploaded_image):
 
     # データベースから料理データを取得
     dishes = Cooking_data.objects.all()
-    # print("dishes", dishes)
+    # print("dishes", dishes[1].id)
     selected_dishes = select_matching_dishes(dishes, plate_color, plate_size)
     print("selected_dishes:", selected_dishes)
 
@@ -35,24 +35,41 @@ def process_image(uploaded_image):
 
     # NumPy配列をPillowのImageオブジェクトに変換
     pil_image = Image.fromarray(rgb_image)
+    resized_plate_image_url = save_image(pil_image, "plate")
 
-    # 合成画像のリスト
-    composite_images = []
+    # 合成画像のデータを格納するリスト
+    processed_images_data = []
 
-    composite_images_urls = []
+    # # 合成画像のリスト
+    # composite_images = []
+
+    # composite_images_urls = []
     for dish in selected_dishes:
         # 各料理に対する合成画像を作成
         # 各料理に対する合成画像を作成する前に、plate_imageのコピーを作成
         plate_image_copy = pil_image.copy()
         dish_image_path = os.path.join(settings.MEDIA_ROOT, dish.image_path.path)
         composite_image = overlay_dish_on_plate(plate_rate, plate_image_copy, dish_image_path)
-        composite_images.append(composite_image)
+        # composite_images.append(composite_image)
 
-        # 画像を保存し、URLをリストに追加
-        image_url = save_image(composite_image)
-        composite_images_urls.append(image_url)
+        # # 画像を保存し、URLをリストに追加
+        # image_url = save_image(composite_image, dish.name)
+        # composite_images_urls.append(image_url)
 
-    return composite_images_urls
+        # 合成画像を保存し、URLを取得
+        composite_image_url = save_image(composite_image, dish.name)
+
+        # 合成画像のデータをリストに追加
+        processed_images_data.append({
+            'id' : dish.id,
+            'name': dish.name,
+            'url': composite_image_url
+        })
+
+    return {
+        'plate_image_url': resized_plate_image_url,
+        'processed_images': processed_images_data
+    }
 
 def detect_plate_properties(image):
     # ここにお皿の色とサイズを測定するロジックを実装
@@ -180,9 +197,9 @@ def overlay_dish_on_plate(plate_rate, plate_image, dish_image_path):
 
     return composite_image
 
-def save_image(image):
+def save_image(image, name):
     # 一意のファイル名を生成
-    filename = f"{uuid.uuid4()}.png"
+    filename = f"{name}_{uuid.uuid4()}.png"
     filepath = os.path.join(settings.MEDIA_ROOT, filename)
 
     # 画像をファイルに保存

@@ -2,16 +2,58 @@
 <html>
 <head>
     <title>Result of process</title>
+    {%load static%}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/result.css' %}">
 </head>
 <body>
-    <h1>Processed Image</h1>
-    <main>
-        {% for image_url in data %}
-            <img src="{{ image_url }}" alt="Processed Image">
-            <!-- デバッグ用：画像URLを表示 -->
-            <p>{{ image_url }}</p>
-        {% endfor %}
-        <p>aiueo</p>
-    </main>
+    <!-- HTML内でCSRFトークンを設定 -->
+    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+    <div class="container">
+        <h1>Dish Up!! Results</h1>
+        <div class="uploaded-image-container">
+            <img src="{{ data.plate_image_url }}" alt="Uploaded Image" class="uploaded-image">
+            <p>Your Plate</p>
+        </div>
+        <div class="results-grid">
+            {% for image_data in data.processed_images %}
+                <div class="result-item">
+                    <img src="{{ image_data.url }}" alt="{{ image_data.name }}" class="processed-image">
+                    <p>{{ image_data.name }}</p>
+                    <!-- <p>{{ image_data.id }}</p> -->
+                    <button class="btn-good">Good</button>
+                    <button class="btn-bad" data-dish-id="{{ image_data.id }}">Bad</button>
+                </div>
+            {% endfor %}
+        </div>
+        <form action="{% url 'reset_database' %}" method="post">
+            {% csrf_token %}
+            <button type="submit">Return to Upload Page</button>
+        </form>
+    </div>
+
+    <script>
+        document.querySelectorAll('.btn-bad').forEach(button => {
+            button.addEventListener('click', function() {
+                console.log("Bad button is pushed")
+                const dishId = this.getAttribute('data-dish-id');
+                console.log(dishId)
+                // const url = `/app1/update-dish-color/${dishId}/`;
+                // console.log("Fetch URL:", url);
+                const csrfToken = document.getElementsByName('csrfmiddlewaretoken')[0].value;
+                fetch(`/app1/update-dish-color/${dishId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrfToken
+                    }
+                    })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Dish color updated!');
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>

@@ -13,8 +13,8 @@ class Command(BaseCommand):
         df = pd.read_excel(file_path)
 
         for _, row in df.iterrows():
-            Cooking_data.objects.create(
-                # id=row['ID'],  #id is automatically assigned by Django 
+            # 料理データの作成
+            dish, created = Cooking_data.objects.get_or_create(
                 name=row['料理名'],
                 image_path=row['画像パス'],
                 red=row['R'],
@@ -22,5 +22,12 @@ class Command(BaseCommand):
                 blue=row['B'],
                 size_category=row['サイズ']
             )
+
+            # 初期値を設定（すでに存在する場合は更新しない）
+            if created:
+                dish.initial_red = row['R']
+                dish.initial_green = row['G']
+                dish.initial_blue = row['B']
+                dish.save()
 
         self.stdout.write(self.style.SUCCESS('Successfully imported dishes'))

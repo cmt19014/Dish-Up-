@@ -9,5 +9,9 @@ class Cooking_data(models.Model):
     blue = models.IntegerField()
     size_category = models.CharField(max_length=50)  # サイズカテゴリ
 
+    initial_red = models.IntegerField(default=0)
+    initial_green = models.IntegerField(default=0)
+    initial_blue = models.IntegerField(default=0)
+
     def __str__(self):
         return self.name
