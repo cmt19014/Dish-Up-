@@ -5,6 +5,7 @@ import os
 import uuid
 from django.conf import settings
 from .models import Cooking_data
+from django.templatetags.static import static
 
 def process_image(uploaded_image):
     # 画像をOpenCV形式で読み込む

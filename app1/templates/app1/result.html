@@ -11,29 +11,24 @@
     <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
     <div class="container">
         <h1>Dish Up!! </h1>
-        <!-- <div class="uploaded-image-container">
-            <img id="plate_image" src="{{ data.plate_image_url }}" alt="Uploaded Image" class="uploaded-image">
-            <p>Your Plate</p>
-        </div> -->
         <h2>Cooking Suggestion</h2>
+        <h3>-- "Like" button allows you to download the images. --</h3>
+        <h3>-- "Dislike" button makes it difficult to display its cooking. --</h3>
         <div class="results-grid">
             {% for image_data in data.processed_images %}
                 <div class="result-item">
                     <img src="{{ image_data.url }}" alt="{{ image_data.name }}" class="processed-image">
                     <p>{{ image_data.name }}</p>
-                    <!-- <p>{{ image_data.id }}</p> -->
                     <div class="evaluate-button">
-                        <button class="btn-good">Good</button>
-                        <button class="btn-bad" data-dish-id="{{ image_data.id }}">Bad</button>
+                        <a href="{{image_data.url}}" download >
+                            <button class="btn-good">Like</button>
+                        </a>
+                        <button class="btn-bad" data-dish-id="{{ image_data.id }}" data-dish-name="{{ image_data.name }}">Dislike</button>
                     </div>
                     <a href="#" class="recipe-link" data-name="{{ image_data.name }}">View Recipe</a>
                 </div>
             {% endfor %}
         </div>
-        <!-- <div class="uploaded-image-container">
-            <img id="plate_image" src="{{ data.plate_image_url }}" alt="Uploaded Image" class="uploaded-image">
-            <p>Your Plate</p>
-        </div> -->
         <div class="select-next-page">
             <form class="select" action="{% url 'reset_database' %}" method="post">
                 {% csrf_token %}
@@ -62,6 +57,7 @@
             button.addEventListener('click', function() {
                 console.log("Bad button is pushed")
                 const dishId = this.getAttribute('data-dish-id');
+                const dishName = this.getAttribute('data-dish-name');
                 console.log(dishId)
                 // const url = `/app1/update-dish-color/${dishId}/`;
                 // console.log("Fetch URL:", url);
@@ -75,7 +71,7 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        alert('Dish color updated!');
+                        alert('「' + dishName + '」' + ' become less to be displayed!');
                     }
                 });
             });
