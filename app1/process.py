@@ -5,7 +5,7 @@ import os
 import uuid
 from django.conf import settings
 from .models import Cooking_data
-from django.templatetags.static import static
+
 
 def process_image(uploaded_image):
     # 画像をOpenCV形式で読み込む
@@ -28,7 +28,7 @@ def process_image(uploaded_image):
 
     # データベースから料理データを取得
     dishes = Cooking_data.objects.all()
-    # print("dishes", dishes[1].id)
+    # print("dishes", dishes.)
     selected_dishes = select_matching_dishes(dishes, plate_color, plate_size)
     print("selected_dishes:", selected_dishes)
 
@@ -50,13 +50,8 @@ def process_image(uploaded_image):
         # 各料理に対する合成画像を作成
         # 各料理に対する合成画像を作成する前に、plate_imageのコピーを作成
         plate_image_copy = pil_image.copy()
-        dish_image_path = os.path.join(settings.MEDIA_ROOT, dish.image_path.path)
+        dish_image_path = os.path.join(settings.STATICFILES_DIRS[0], f'images/cookingpicture/{dish.id}.png')
         composite_image = overlay_dish_on_plate(plate_rate, plate_image_copy, dish_image_path)
-        # composite_images.append(composite_image)
-
-        # # 画像を保存し、URLをリストに追加
-        # image_url = save_image(composite_image, dish.name)
-        # composite_images_urls.append(image_url)
 
         # 合成画像を保存し、URLを取得
         composite_image_url = save_image(composite_image, dish.name)
