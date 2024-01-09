@@ -59,8 +59,6 @@
                 const dishId = this.getAttribute('data-dish-id');
                 const dishName = this.getAttribute('data-dish-name');
                 console.log(dishId)
-                // const url = `/app1/update-dish-color/${dishId}/`;
-                // console.log("Fetch URL:", url);
                 const csrfToken = document.getElementsByName('csrfmiddlewaretoken')[0].value;
                 fetch(`/app1/update-dish-color/${dishId}/`, {
                     method: 'POST',

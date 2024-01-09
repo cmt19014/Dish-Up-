@@ -28,7 +28,6 @@ def process_image(uploaded_image):
 
     # データベースから料理データを取得
     dishes = Cooking_data.objects.all()
-    # print("dishes", dishes.image_path)
     selected_dishes = select_matching_dishes(dishes, plate_color, plate_size)
     print("selected_dishes:", selected_dishes)
 
@@ -42,15 +41,10 @@ def process_image(uploaded_image):
     # 合成画像のデータを格納するリスト
     processed_images_data = []
 
-    # # 合成画像のリスト
-    # composite_images = []
-
-    # composite_images_urls = []
     for dish in selected_dishes:
         # 各料理に対する合成画像を作成
         # 各料理に対する合成画像を作成する前に、plate_imageのコピーを作成
         plate_image_copy = pil_image.copy()
-        # dish_image_path = os.path.join(settings.STATICFILES_DIRS[0], f'images/cookingpicture/{dish.id}.png')
         dish_image_path = os.path.join(settings.STATICFILES_DIRS[0], f'images/{dish.image_path}')
         composite_image = overlay_dish_on_plate(plate_rate, plate_image_copy, dish_image_path)
 
@@ -154,11 +148,8 @@ def select_matching_dishes(dishes, plate_color, plate_size):
     # 各料理とお皿の色の差異を計算し、差異が小さい順にソート
     matching_dishes = []
     for dish in dishes:
-        # print("dish", type(dish.size_category))
-        # print("plate_size", type(plate_size))
         if int(dish.size_category) == plate_size:
             dish_color = np.array([int(dish.red), int(dish.green), int(dish.blue)])
-            # print("dish_color - plate_color" , dish_color - plate_color)
             color_difference = np.linalg.norm(dish_color - plate_color)
             matching_dishes.append((dish, color_difference))
     
@@ -183,7 +174,6 @@ def overlay_dish_on_plate(plate_rate, plate_image, dish_image_path):
         scale_factor = plate_rate*1.1
     else:
         scale_factor = 0.4
-    # scale_factor = 0.75  # 料理画像をどれくらい縮小するか
     new_dish_width = int(plate_width * scale_factor)
     new_dish_height = int(dish_image.height * new_dish_width / dish_image.width)
     resized_dish_image = dish_image.resize((new_dish_width, new_dish_height), Image.Resampling.LANCZOS)

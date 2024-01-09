@@ -4,7 +4,6 @@ from .forms import ImageUploadForm
 from .process import process_image
 import random
 from django.http import JsonResponse
-import json
 
 def cooking_data_list(request):
     cooking_data = Cooking_data.objects.all()
@@ -16,9 +15,6 @@ def upload_and_process_image(request):
         if form.is_valid():
             # 画像の処理
             processed_data = process_image(request.FILES['image'])
-
-            # デバッグ用：生成されたURLリストをコンソールに出力
-            # print("out_of_process;result_url", processed_data)
             return render(request, 'app1/result.html', {'data': processed_data})
     else:
         form = ImageUploadForm()
@@ -61,9 +57,6 @@ def process_image_again(request):
         image_path = os.path.join(settings.MEDIA_ROOT, image_relative_path)
 
         processed_data = process_image(image_path)
-
-            # デバッグ用：生成されたURLリストをコンソールに出力
-            # print("out_of_process;result_url", processed_data)
         return render(request, 'app1/result.html', {'data': processed_data})
 
     # POSTリクエストでない場合は、アップロードページにリダイレクト

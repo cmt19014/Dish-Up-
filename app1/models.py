@@ -1,7 +1,6 @@
 from django.db import models
 
 class Cooking_data(models.Model):
-    # id = models.IntegerField(primary_key=True) #ID
     name = models.CharField(max_length=100)  # 料理名
     image_path = models.ImageField(upload_to='cooking_images/')  # 画像のパス
     red = models.IntegerField()  # RGB値
