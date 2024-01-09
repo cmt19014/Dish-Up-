@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Result of process</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {%load static%}
     <link rel="stylesheet" type="text/css" href="{% static 'css/result.css' %}">
 </head>
@@ -9,31 +10,51 @@
     <!-- HTML内でCSRFトークンを設定 -->
     <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
     <div class="container">
-        <h1>Dish Up!! Results</h1>
-        <div class="uploaded-image-container">
+        <h1>Dish Up!! </h1>
+        <!-- <div class="uploaded-image-container">
             <img id="plate_image" src="{{ data.plate_image_url }}" alt="Uploaded Image" class="uploaded-image">
             <p>Your Plate</p>
-        </div>
+        </div> -->
+        <h2>Cooking Suggestion</h2>
         <div class="results-grid">
             {% for image_data in data.processed_images %}
                 <div class="result-item">
                     <img src="{{ image_data.url }}" alt="{{ image_data.name }}" class="processed-image">
                     <p>{{ image_data.name }}</p>
                     <!-- <p>{{ image_data.id }}</p> -->
-                    <button class="btn-good">Good</button>
-                    <button class="btn-bad" data-dish-id="{{ image_data.id }}">Bad</button>
+                    <div class="evaluate-button">
+                        <button class="btn-good">Good</button>
+                        <button class="btn-bad" data-dish-id="{{ image_data.id }}">Bad</button>
+                    </div>
+                    <a href="#" class="recipe-link" data-name="{{ image_data.name }}">View Recipe</a>
                 </div>
             {% endfor %}
         </div>
-        <form action="{% url 'reset_database' %}" method="post">
-            {% csrf_token %}
-            <button type="submit">Return to Upload Page</button>
-        </form>
-        <form action="{% url 'process_image_again' %}" method="post">
-            {% csrf_token %}
-            <input type="hidden" name="plate_image_url" value="{{ data.plate_image_url }}">
-            <button type="submit">同じお皿でもう一度試す</button>
-        </form>
+        <!-- <div class="uploaded-image-container">
+            <img id="plate_image" src="{{ data.plate_image_url }}" alt="Uploaded Image" class="uploaded-image">
+            <p>Your Plate</p>
+        </div> -->
+        <div class="select-next-page">
+            <form class="select" action="{% url 'reset_database' %}" method="post">
+                {% csrf_token %}
+                <button type="submit">
+                    Return to Upload Page
+                    <img src="{%static 'images/left_arrow.png'%}" alt="Left_Arrow" class="icon">
+                </button>
+            </form>
+            <div class="uploaded-image-container">
+                <img id="plate_image" src="{{ data.plate_image_url }}" alt="Uploaded Image" class="uploaded-image">
+                <p>Your Plate</p>
+            </div>
+            <form class="select" action="{% url 'process_image_again' %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="plate_image_url" value="{{ data.plate_image_url }}">
+                <button type="submit">
+                    Retry The Same Plate
+                    <img src="{%static 'images/reload.png'%}" alt="Reload_Arrow" class="icon">
+                </button>
+            </form>
+        </div>
     </div>
 
     <script>
@@ -59,6 +80,18 @@
                 });
             });
         });
-    </script>    
+    </script> 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.recipe-link').forEach(function(link) {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault(); // デフォルトのリンク動作を防止
+                    var dishName = e.target.getAttribute('data-name');
+                    var searchQuery = encodeURIComponent(dishName + ' レシピ');
+                    window.open('https://www.google.com/search?q=' + searchQuery, '_blank');
+                });
+            });
+        });
+    </script>  
 </body>
 </html>
