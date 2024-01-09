@@ -28,7 +28,7 @@ def process_image(uploaded_image):
 
     # データベースから料理データを取得
     dishes = Cooking_data.objects.all()
-    # print("dishes", dishes.)
+    # print("dishes", dishes.image_path)
     selected_dishes = select_matching_dishes(dishes, plate_color, plate_size)
     print("selected_dishes:", selected_dishes)
 
@@ -50,7 +50,8 @@ def process_image(uploaded_image):
         # 各料理に対する合成画像を作成
         # 各料理に対する合成画像を作成する前に、plate_imageのコピーを作成
         plate_image_copy = pil_image.copy()
-        dish_image_path = os.path.join(settings.STATICFILES_DIRS[0], f'images/cookingpicture/{dish.id}.png')
+        # dish_image_path = os.path.join(settings.STATICFILES_DIRS[0], f'images/cookingpicture/{dish.id}.png')
+        dish_image_path = os.path.join(settings.STATICFILES_DIRS[0], f'images/{dish.image_path}')
         composite_image = overlay_dish_on_plate(plate_rate, plate_image_copy, dish_image_path)
 
         # 合成画像を保存し、URLを取得
